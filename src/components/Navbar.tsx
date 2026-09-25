@@ -15,6 +15,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onLaunc
     { id: 'scanner', label: 'AI Scanner', icon: Cpu },
     { id: 'passport', label: 'Trust Passport', icon: FileText },
     { id: 'security-center', label: 'Security Center', icon: Activity },
+    { id: 'integrations', label: 'SaaS Integrations', icon: ShieldAlert },
     { id: 'privacy', label: 'Privacy by Design', icon: Lock },
     { id: 'about', label: 'About', icon: ShieldAlert },
     { id: 'settings', label: 'Settings', icon: Settings },

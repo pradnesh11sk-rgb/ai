@@ -9,6 +9,7 @@ import { AboutPage } from './components/AboutPage';
 import { ExportReportModal } from './components/ExportReportModal';
 import { Footer } from './components/Footer';
 import { SettingsPage } from './components/SettingsPage';
+import { IntegrationsPage } from './components/IntegrationsPage';
 import type { TrustPassportData, PromptScanResult, ResponseTrustResult } from '../shared/types';
 import { Sparkles, X } from 'lucide-react';
 
@@ -189,6 +190,10 @@ export function App() {
 
         {activeTab === 'security-center' && (
           <SecurityCenter />
+        )}
+
+        {activeTab === 'integrations' && (
+          <IntegrationsPage />
         )}
 
         {activeTab === 'privacy' && (

@@ -114,6 +114,37 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
           </div>
         </div>
 
+        {/* Global Compliance & Trust Badges */}
+        <div style={{
+          padding: '24px 0',
+          borderTop: '1px solid var(--border-subtle)',
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '16px',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginBottom: '24px'
+        }}>
+          {['SOC2 TYPE II COMPLIANT', 'HIPAA READY', 'GDPR COMPLIANT', 'CCPA COMPLIANT', 'ISO 27001 CERTIFIED'].map(badge => (
+            <div key={badge} style={{
+              padding: '6px 12px',
+              border: '1px solid rgba(16, 185, 129, 0.3)',
+              background: 'rgba(16, 185, 129, 0.05)',
+              borderRadius: '6px',
+              color: '#34d399',
+              fontSize: '0.6875rem',
+              fontWeight: 800,
+              letterSpacing: '0.05em',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}>
+              <Shield size={12} />
+              {badge}
+            </div>
+          ))}
+        </div>
+
         {/* Ethical / Defensive Security Disclaimer */}
         <div style={{
           borderTop: '1px solid var(--border-subtle)',
