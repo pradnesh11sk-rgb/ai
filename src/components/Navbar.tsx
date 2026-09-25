@@ -31,11 +31,34 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onLaunc
       position: 'sticky',
       top: 0,
       zIndex: 100,
-      backgroundColor: 'rgba(6, 8, 15, 0.85)',
-      backdropFilter: 'blur(16px)',
-      borderBottom: '1px solid var(--border-subtle)',
-      transition: 'all 0.3s ease'
+      width: '100%'
     }}>
+      {/* Global Security Banner */}
+      <div style={{
+        background: 'linear-gradient(90deg, rgba(6,182,212,0.15) 0%, rgba(139,92,246,0.15) 100%)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+        padding: '6px 0',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: '8px',
+        fontSize: '0.75rem',
+        fontWeight: 600,
+        color: '#cbd5e1',
+        letterSpacing: '0.05em',
+        textTransform: 'uppercase'
+      }}>
+        <Lock size={12} color="#38bdf8" />
+        <span>End-to-End Encrypted &bull; Local First Processing</span>
+      </div>
+
+      <div style={{
+        backgroundColor: 'rgba(6, 8, 15, 0.75)',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
+        borderBottom: '1px solid var(--border-subtle)',
+        transition: 'all 0.3s ease'
+      }}>
       <div className="container" style={{
         display: 'flex',
         alignItems: 'center',
@@ -251,6 +274,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onLaunc
           </div>
         </div>
       )}
+      </div>
     </header>
   );
 };
