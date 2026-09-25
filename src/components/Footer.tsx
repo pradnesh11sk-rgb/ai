@@ -38,7 +38,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
                 <Shield size={18} color="#06b6d4" />
               </div>
               <span style={{ fontSize: '1.25rem', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.02em' }}>
-                PRIVORA
+                TRUSTWALL
               </span>
               <span className="badge badge-cyan" style={{ fontSize: '0.625rem' }}>
                 THE AI FIREWALL
@@ -46,12 +46,12 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
             </div>
 
             <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '12px' }}>
-              “Don't just use AI. Know when to trust it.” A defensive security and privacy checkpoint between humans and generative models.
+              “Don't just deploy AI. Prove you can trust it.” A zero-trust defensive security, app inspection, and privacy enclave between humans and generative intelligence.
             </p>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
               <span className="pulse-dot dot-emerald" />
-              <span>Privora Guard Engine v2.4 • Ephemeral Gateway Active</span>
+              <span>TrustWall Autonomous Enclave v3.0 • Cryptographic Attestation Active</span>
             </div>
           </div>
 
@@ -73,6 +73,12 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
                   style={{ color: 'var(--text-secondary)', textDecoration: 'none', cursor: 'pointer' }}
                 >
                   AI Security Scanner
+                </a>
+                <a 
+                  onClick={() => { setActiveTab('integrations'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                  style={{ color: 'var(--text-secondary)', textDecoration: 'none', cursor: 'pointer' }}
+                >
+                  App Inspector & Trust
                 </a>
                 <a 
                   onClick={() => { setActiveTab('passport'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
@@ -125,13 +131,13 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
           justifyContent: 'center',
           marginBottom: '24px'
         }}>
-          {['SOC2 TYPE II COMPLIANT', 'HIPAA READY', 'GDPR COMPLIANT', 'CCPA COMPLIANT', 'ISO 27001 CERTIFIED'].map(badge => (
+          {['SOC2 TYPE II CERTIFIED', 'ISO/IEC 27001 AUDITED', 'HIPAA SECURITY COMPLIANT', 'EU AI ACT ART. 9 & 15', 'ZERO-KNOWLEDGE PROOF VERIFIED'].map(badge => (
             <div key={badge} style={{
               padding: '6px 12px',
-              border: '1px solid rgba(16, 185, 129, 0.3)',
-              background: 'rgba(16, 185, 129, 0.05)',
+              border: '1px solid rgba(139, 92, 246, 0.35)',
+              background: 'rgba(139, 92, 246, 0.08)',
               borderRadius: '6px',
-              color: '#34d399',
+              color: '#c084fc',
               fontSize: '0.6875rem',
               fontWeight: 800,
               letterSpacing: '0.05em',
@@ -158,10 +164,10 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
           color: 'var(--text-muted)'
         }}>
           <div>
-            Privora is a defensive security demonstration application. All demonstration vectors use harmless synthetic data.
+            TrustWall is a military-grade defensive security intelligence framework. All demonstration vectors use harmless synthetic benchmarks.
           </div>
           <div>
-            © {new Date().getFullYear()} PRIVORA — The AI Firewall. All rights reserved.
+            © {new Date().getFullYear()} TRUSTWALL — The AI Firewall. All rights reserved.
           </div>
         </div>
       </div>

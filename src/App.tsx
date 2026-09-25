@@ -192,7 +192,7 @@ export function App() {
           <SecurityCenter />
         )}
 
-        {activeTab === 'integrations' && (
+        {(activeTab === 'integrations' || activeTab === 'app-inspector') && (
           <IntegrationsPage />
         )}
 

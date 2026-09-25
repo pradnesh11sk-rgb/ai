@@ -1,8 +1,21 @@
-import React, { useState } from 'react';
-import { Database, Key, CheckCircle, AlertCircle, Save, Loader } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Database, Key, CheckCircle, AlertCircle, Save, Loader, Palette } from 'lucide-react';
 import { saveSupabaseConfigApi, saveAiKeysApi, testSupabaseConnectionApi, testAiKeyApi } from '../services/api';
+import { type ThemeId, AVAILABLE_THEMES, getInitialTheme, applyTheme } from '../services/themeManager';
 
 export const SettingsPage: React.FC = () => {
+  // Theme state
+  const [activeTheme, setActiveTheme] = useState<ThemeId>('cyber-violet');
+
+  useEffect(() => {
+    setActiveTheme(getInitialTheme());
+  }, []);
+
+  const handleSelectTheme = (themeId: ThemeId) => {
+    setActiveTheme(themeId);
+    applyTheme(themeId);
+  };
+
   // Supabase state
   const [supabaseUrl, setSupabaseUrl] = useState('');
   const [supabaseKey, setSupabaseKey] = useState('');
@@ -113,6 +126,49 @@ export const SettingsPage: React.FC = () => {
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+        {/* Interface Color Theme Card */}
+        <div className="card glass-panel" style={{ padding: '2rem' }}>
+          <h2 style={{ fontSize: '1.25rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '1rem' }}>
+            <Palette size={20} className="text-accent" />
+            Interface Color Palette & Visual Theme
+          </h2>
+          <p className="text-muted" style={{ marginBottom: '1.5rem', fontSize: '0.9rem' }}>
+            Select your preferred military-grade aesthetic. Changes apply instantly across the entire TrustWall application.
+          </p>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '14px' }}>
+            {AVAILABLE_THEMES.map((theme) => (
+              <div
+                key={theme.id}
+                onClick={() => handleSelectTheme(theme.id)}
+                style={{
+                  padding: '16px',
+                  borderRadius: '12px',
+                  border: activeTheme === theme.id ? `2px solid ${theme.accentColor}` : '1px solid var(--border-subtle)',
+                  background: activeTheme === theme.id ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.3)',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  boxShadow: activeTheme === theme.id ? `0 0 20px ${theme.accentColor}33` : 'none'
+                }}
+              >
+                <div style={{
+                  height: '40px',
+                  borderRadius: '8px',
+                  background: theme.colorPreview,
+                  marginBottom: '12px',
+                  border: '1px solid rgba(255,255,255,0.2)'
+                }} />
+                <div style={{ fontWeight: 700, fontSize: '0.9rem', color: '#ffffff', marginBottom: '4px' }}>
+                  {theme.name}
+                </div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                  {theme.description}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Supabase Config Card */}
         <div className="card glass-panel" style={{ padding: '2rem' }}>
           <h2 style={{ fontSize: '1.25rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '1rem' }}>

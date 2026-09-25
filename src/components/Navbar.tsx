@@ -1,5 +1,20 @@
-import React, { useState } from 'react';
-import { Shield, ShieldAlert, Cpu, Lock, Activity, Menu, X, Sparkles, FileText, Settings } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { 
+  Shield, 
+  ShieldAlert, 
+  Cpu, 
+  Lock, 
+  Activity, 
+  Menu, 
+  X, 
+  Sparkles, 
+  FileText, 
+  Settings, 
+  Palette, 
+  Award,
+  ChevronDown
+} from 'lucide-react';
+import { type ThemeId, AVAILABLE_THEMES, getInitialTheme, applyTheme } from '../services/themeManager';
 
 interface NavbarProps {
   activeTab: string;
@@ -9,13 +24,27 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onLaunchDemo }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [currentTheme, setCurrentTheme] = useState<ThemeId>('cyber-violet');
+  const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
+
+  useEffect(() => {
+    const initial = getInitialTheme();
+    setCurrentTheme(initial);
+    applyTheme(initial);
+  }, []);
+
+  const handleThemeChange = (themeId: ThemeId) => {
+    setCurrentTheme(themeId);
+    applyTheme(themeId);
+    setThemeDropdownOpen(false);
+  };
 
   const navItems = [
     { id: 'home', label: 'Overview', icon: Shield },
     { id: 'scanner', label: 'AI Scanner', icon: Cpu },
     { id: 'passport', label: 'Trust Passport', icon: FileText },
     { id: 'security-center', label: 'Security Center', icon: Activity },
-    { id: 'integrations', label: 'SaaS Integrations', icon: ShieldAlert },
+    { id: 'integrations', label: 'App Inspector & Trust', icon: Award },
     { id: 'privacy', label: 'Privacy by Design', icon: Lock },
     { id: 'about', label: 'About', icon: ShieldAlert },
     { id: 'settings', label: 'Settings', icon: Settings },
@@ -36,7 +65,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onLaunc
     }}>
       {/* Global Security Banner */}
       <div style={{
-        background: 'linear-gradient(90deg, rgba(6,182,212,0.15) 0%, rgba(139,92,246,0.15) 100%)',
+        background: 'linear-gradient(90deg, rgba(139,92,246,0.15) 0%, rgba(6,182,212,0.15) 100%)',
         borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
         padding: '6px 0',
         display: 'flex',
@@ -49,12 +78,12 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onLaunc
         letterSpacing: '0.05em',
         textTransform: 'uppercase'
       }}>
-        <Lock size={12} color="#38bdf8" />
-        <span>End-to-End Encrypted &bull; Local First Processing</span>
+        <Lock size={12} color="var(--accent-primary)" />
+        <span>End-to-End Cryptographically Attested &bull; Zero-Data Retention Enclave</span>
       </div>
 
       <div style={{
-        backgroundColor: 'rgba(6, 8, 15, 0.75)',
+        backgroundColor: 'rgba(7, 9, 20, 0.82)',
         backdropFilter: 'blur(24px)',
         WebkitBackdropFilter: 'blur(24px)',
         borderBottom: '1px solid var(--border-subtle)',
@@ -81,14 +110,14 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onLaunc
             width: '40px',
             height: '40px',
             borderRadius: '10px',
-            background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%)',
-            border: '1px solid rgba(6, 182, 212, 0.4)',
+            background: 'var(--theme-gradient, linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%))',
+            border: '1px solid var(--border-card)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 0 15px rgba(6, 182, 212, 0.25)'
+            boxShadow: 'var(--shadow-glow)'
           }}>
-            <Shield size={22} color="#06b6d4" />
+            <Shield size={22} color="#ffffff" />
           </div>
 
           <div>
@@ -97,20 +126,20 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onLaunc
                 fontSize: '1.25rem',
                 fontWeight: 800,
                 letterSpacing: '-0.02em',
-                background: 'linear-gradient(90deg, #ffffff 0%, #cbd5e1 50%, #38bdf8 100%)',
+                background: 'linear-gradient(90deg, #ffffff 0%, #cbd5e1 50%, var(--accent-primary) 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
               }}>
-                PRIVORA
+                TRUSTWALL
               </span>
               <span style={{
                 fontSize: '0.625rem',
                 fontWeight: 700,
                 padding: '2px 6px',
                 borderRadius: '4px',
-                background: 'rgba(6, 182, 212, 0.12)',
-                color: '#38bdf8',
-                border: '1px solid rgba(6, 182, 212, 0.3)',
+                background: 'var(--theme-badge-bg)',
+                color: 'var(--theme-badge-text)',
+                border: '1px solid var(--theme-badge-border)',
                 letterSpacing: '0.05em'
               }}>
                 AI FIREWALL
@@ -119,7 +148,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onLaunc
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '1px' }}>
               <span className="pulse-dot dot-emerald" />
               <span style={{ fontSize: '0.6875rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
-                Active Guardrail Engine
+                Autonomous Defense Node
               </span>
             </div>
           </div>
@@ -132,7 +161,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onLaunc
           alignItems: 'center'
         }} className="desktop-nav">
           <style>{`
-            @media (min-width: 960px) {
+            @media (min-width: 1040px) {
               .desktop-nav { display: flex !important; }
               .mobile-toggle { display: none !important; }
             }
@@ -148,26 +177,112 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onLaunc
                   display: 'flex',
                   alignItems: 'center',
                   gap: '6px',
-                  background: isActive ? 'rgba(56, 189, 248, 0.1)' : 'transparent',
-                  color: isActive ? '#38bdf8' : 'var(--text-secondary)',
-                  border: isActive ? '1px solid rgba(56, 189, 248, 0.25)' : '1px solid transparent',
-                  padding: '7px 14px',
+                  background: isActive ? 'var(--theme-badge-bg)' : 'transparent',
+                  color: isActive ? 'var(--theme-badge-text)' : 'var(--text-secondary)',
+                  border: isActive ? '1px solid var(--theme-badge-border)' : '1px solid transparent',
+                  padding: '7px 12px',
                   borderRadius: 'var(--radius-md)',
-                  fontSize: '0.875rem',
+                  fontSize: '0.84rem',
                   fontWeight: 600,
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',
                 }}
               >
-                <Icon size={15} color={isActive ? '#38bdf8' : 'currentColor'} />
+                <Icon size={14} color={isActive ? 'var(--accent-primary)' : 'currentColor'} />
                 {item.label}
               </button>
             );
           })}
         </nav>
 
-        {/* Action Controls */}
+        {/* Action Controls & Theme Switcher */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          
+          {/* Dynamic Theme Picker */}
+          <div style={{ position: 'relative' }}>
+            <button
+              onClick={() => setThemeDropdownOpen(!themeDropdownOpen)}
+              className="btn btn-secondary btn-sm"
+              title="Change App Color Theme"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '6px 10px',
+                borderColor: 'var(--border-card)'
+              }}
+            >
+              <Palette size={14} color="var(--accent-primary)" />
+              <span style={{ fontSize: '0.75rem', display: 'none' }} className="theme-btn-text">Theme</span>
+              <style>{`
+                @media (min-width: 768px) {
+                  .theme-btn-text { display: inline !important; }
+                }
+              `}</style>
+              <ChevronDown size={12} />
+            </button>
+
+            {themeDropdownOpen && (
+              <div style={{
+                position: 'absolute',
+                top: 'calc(100% + 8px)',
+                right: 0,
+                width: '240px',
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border-card)',
+                borderRadius: 'var(--radius-md)',
+                boxShadow: '0 10px 30px rgba(0,0,0,0.8)',
+                padding: '8px',
+                zIndex: 200,
+                backdropFilter: 'blur(20px)'
+              }}>
+                <div style={{
+                  fontSize: '0.6875rem',
+                  fontWeight: 700,
+                  color: 'var(--text-muted)',
+                  textTransform: 'uppercase',
+                  padding: '6px 8px 4px',
+                  letterSpacing: '0.05em'
+                }}>
+                  Select Interface Color:
+                </div>
+                {AVAILABLE_THEMES.map((theme) => (
+                  <button
+                    key={theme.id}
+                    onClick={() => handleThemeChange(theme.id)}
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      padding: '8px 10px',
+                      borderRadius: '6px',
+                      border: 'none',
+                      background: currentTheme === theme.id ? 'rgba(255, 255, 255, 0.08)' : 'transparent',
+                      color: currentTheme === theme.id ? '#ffffff' : 'var(--text-secondary)',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      transition: 'background 0.15s ease'
+                    }}
+                  >
+                    <div style={{
+                      width: '16px',
+                      height: '16px',
+                      borderRadius: '50%',
+                      background: theme.colorPreview,
+                      border: '1px solid rgba(255,255,255,0.3)',
+                      flexShrink: 0
+                    }} />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: '0.8125rem', fontWeight: 600 }}>{theme.name}</div>
+                      <div style={{ fontSize: '0.6875rem', color: 'var(--text-muted)' }}>{theme.description}</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
           {/* Quick Demo CTA */}
           <button
             onClick={() => {
@@ -236,8 +351,8 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onLaunc
                   display: 'flex',
                   alignItems: 'center',
                   gap: '12px',
-                  background: isActive ? 'rgba(56, 189, 248, 0.12)' : 'transparent',
-                  color: isActive ? '#38bdf8' : 'var(--text-primary)',
+                  background: isActive ? 'var(--theme-badge-bg)' : 'transparent',
+                  color: isActive ? 'var(--theme-badge-text)' : 'var(--text-primary)',
                   border: 'none',
                   padding: '12px',
                   borderRadius: 'var(--radius-md)',
@@ -248,7 +363,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onLaunc
                   cursor: 'pointer'
                 }}
               >
-                <Icon size={18} color={isActive ? '#38bdf8' : 'var(--text-secondary)'} />
+                <Icon size={18} color={isActive ? 'var(--accent-primary)' : 'var(--text-secondary)'} />
                 {item.label}
               </button>
             );
