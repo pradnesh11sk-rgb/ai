@@ -2,8 +2,8 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import type { TrustPassportData } from '../../shared/types.js';
 
 // In-memory runtime config storage
-let currentSupabaseUrl: string = process.env.SUPABASE_URL || '';
-let currentSupabaseKey: string = process.env.SUPABASE_ANON_KEY || '';
+let currentSupabaseUrl: string = process.env.SUPABASE_URL || 'https://oylbwbqjrarcujzmridu.supabase.co';
+let currentSupabaseKey: string = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im95bGJ3YnFqcmFyY3Vqem1yaWR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAyMjk5MjUsImV4cCI6MjEwNTgwNTkyNX0.BLjD0krHWVtDZEyL2Kclh5gl1gYbuUFYhBPJhm8qL4E';
 
 let supabaseInstance: SupabaseClient | null = null;
 
@@ -48,7 +48,8 @@ const inMemoryPassports: TrustPassportData[] = [
 function initClient(): SupabaseClient | null {
   if (currentSupabaseUrl && currentSupabaseKey && currentSupabaseUrl.startsWith('http')) {
     try {
-      supabaseInstance = createClient(currentSupabaseUrl, currentSupabaseKey);
+      const sanitizedUrl = currentSupabaseUrl.replace(/\/rest\/v1\/?$/, '');
+      supabaseInstance = createClient(sanitizedUrl, currentSupabaseKey);
       return supabaseInstance;
     } catch (e) {
       console.warn('Failed to initialize Supabase client:', e);
