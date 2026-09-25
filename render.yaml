@@ -1,0 +1,30 @@
+# ==============================================================================
+# RENDER DEPLOYMENT BLUEPRINT (render.yaml)
+# ==============================================================================
+# Docs: https://render.com/docs/blueprint-spec
+
+services:
+  # Option 1: Fullstack Web Service (Node.js Express + Built Frontend)
+  - type: web
+    name: trustwall-ai-firewall
+    runtime: node
+    plan: free
+    region: oregon
+    rootDir: .
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: SUPABASE_URL
+        value: https://oylbwbqjrarcujzmridu.supabase.co
+      - key: SUPABASE_ANON_KEY
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im95bGJ3YnFqcmFyY3Vqem1yaWR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAyMjk5MjUsImV4cCI6MjEwNTgwNTkyNX0.BLjD0krHWVtDZEyL2Kclh5gl1gYbuUFYhBPJhm8qL4E
+      - key: VITE_API_URL
+        value: /api
+      - key: VITE_SUPABASE_URL
+        value: https://oylbwbqjrarcujzmridu.supabase.co
+      - key: VITE_SUPABASE_ANON_KEY
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im95bGJ3YnFqcmFyY3Vqem1yaWR1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAyMjk5MjUsImV4cCI6MjEwNTgwNTkyNX0.BLjD0krHWVtDZEyL2Kclh5gl1gYbuUFYhBPJhm8qL4E

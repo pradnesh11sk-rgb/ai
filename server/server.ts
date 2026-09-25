@@ -1,6 +1,8 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
+import fs from 'fs';
 import { scanPrivacy, sanitizePrompt } from './services/privacyScanner.js';
 import { detectThreats, neutralizeThreats } from './services/threatDetector.js';
 import { analyzeResponse } from './services/responseAnalyzer.js';
@@ -400,7 +402,19 @@ app.get('/api/activity', (_req: Request, res: Response) => {
   res.json(recentActivity);
 });
 
-// Generic 404 handler
+// Static frontend serving in production environments (Render, Railway, Cloud Run)
+const distPath = path.resolve(process.cwd(), 'dist');
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
+  app.get('*', (req: Request, res: Response, next: NextFunction) => {
+    if (req.path.startsWith('/api')) {
+      return next();
+    }
+    res.sendFile(path.join(distPath, 'index.html'));
+  });
+}
+
+// Generic 404 handler for API routes
 app.use((_req: Request, res: Response) => {
   res.status(404).json({ error: 'Endpoint not found' });
 });
