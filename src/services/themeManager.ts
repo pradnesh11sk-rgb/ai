@@ -20,10 +20,10 @@ export const AVAILABLE_THEMES: ThemeOption[] = [
   },
   {
     id: 'cyber-emerald',
-    name: 'Military Emerald',
+    name: 'Defensive Emerald',
     colorPreview: 'linear-gradient(135deg, #10b981, #059669)',
     accentColor: '#10b981',
-    description: 'Tactical Matrix & Vault Gold Defense'
+    description: 'Tactical Matrix & Clean Green Defense'
   },
   {
     id: 'sapphire-frost',

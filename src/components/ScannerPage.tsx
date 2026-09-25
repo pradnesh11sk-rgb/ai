@@ -29,6 +29,9 @@ import {
   simulateResponseApi, 
   analyzeResponseApi 
 } from '../services/api';
+import { DetectionExplainer } from './DetectionExplainer';
+import { RemediationPipeline } from './RemediationPipeline';
+import { BookOpen } from 'lucide-react';
 
 interface ScannerPageProps {
   initialPrompt?: string;
@@ -130,6 +133,7 @@ export const ScannerPage: React.FC<ScannerPageProps> = ({
   // Passport state
   const [currentPassport, setCurrentPassport] = useState<TrustPassportData | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [showExplainer, setShowExplainer] = useState(false);
 
   useEffect(() => {
     if (initialPrompt) {
@@ -309,20 +313,49 @@ export const ScannerPage: React.FC<ScannerPageProps> = ({
         )}
 
         {/* Section Header */}
-        <div style={{ marginBottom: '28px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-            <span className="badge badge-cyan">Interactive Security Pipeline</span>
-            <span style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>
-              Step-by-step verification
-            </span>
+        <div style={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          justifyContent: 'space-between',
+          marginBottom: '24px',
+          flexWrap: 'wrap',
+          gap: '16px'
+        }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+              <span className="badge badge-cyan">Interactive Security Pipeline</span>
+              <span style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>
+                Step-by-step verification
+              </span>
+            </div>
+            <h2 style={{ fontSize: '2rem', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.02em' }}>
+              AI Security Scanner
+            </h2>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem', maxWidth: '680px' }}>
+              Inspect prompts before dispatching them to large language models. Redact PII, neutralize injection vectors, simulate safe inference, and evaluate response trust.
+            </p>
           </div>
-          <h2 style={{ fontSize: '2rem', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.02em' }}>
-            AI Security Scanner
-          </h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem', maxWidth: '680px' }}>
-            Inspect prompts before dispatching them to large language models. Redact PII, neutralize injection vectors, simulate safe inference, and evaluate response trust.
-          </p>
+
+          <button
+            type="button"
+            onClick={() => setShowExplainer(!showExplainer)}
+            className="btn btn-secondary btn-sm"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              borderColor: 'rgba(56, 189, 248, 0.4)',
+              color: '#38bdf8',
+              background: showExplainer ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255, 255, 255, 0.03)'
+            }}
+          >
+            <BookOpen size={15} />
+            <span>{showExplainer ? 'Close Detection Explainer' : '🔬 How Detection Works & Architecture'}</span>
+          </button>
         </div>
+
+        {/* Expandable Detection Explainer Panel */}
+        {showExplainer && <DetectionExplainer />}
 
         {/* Quick Demo Scenarios Selector (Judge instant tester) */}
         <div className="glass-panel" style={{ padding: '18px 20px', marginBottom: '24px' }}>
@@ -562,6 +595,15 @@ export const ScannerPage: React.FC<ScannerPageProps> = ({
                 </span>
               </div>
             </div>
+
+            {/* Tangible Remediation Pipeline */}
+            <RemediationPipeline 
+              originalPrompt={promptText}
+              scanResult={scanResult}
+              protectedResult={protectedResult}
+              onProtectPrompt={handleProtectPrompt}
+              isProtecting={isProtecting}
+            />
 
             {/* Split Grid: Privacy Scan vs Threat Scan */}
             <div className="grid-2" style={{ marginBottom: '20px' }}>

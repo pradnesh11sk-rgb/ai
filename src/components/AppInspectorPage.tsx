@@ -9,7 +9,8 @@ import {
   Globe, 
   CheckCircle2, 
   AlertOctagon, 
-  Award
+  Award,
+  Info
 } from 'lucide-react';
 
 interface AuditItem {
@@ -154,7 +155,7 @@ export const AppInspectorPage: React.FC = () => {
       appName,
       targetUrl: url,
       score: 98,
-      grade: 'A+ MILITARY GRADE',
+      grade: 'A+ HARDENED DEFENSE',
       certId: `CERT-TRW-${certNum}`,
       certHash: randomHash,
       timestamp: new Date().toISOString(),
@@ -187,7 +188,7 @@ export const AppInspectorPage: React.FC = () => {
 <a href="https://trustwall.ai/verify/${scanResult?.certId || 'CERT-TRW-882914'}" target="_blank" rel="noopener noreferrer">
   <img 
     src="https://img.shields.io/badge/TrustWall-Protected%20AI%20Firewall-8b5cf6?style=for-the-badge&logo=shield&logoColor=white" 
-    alt="Verified by TrustWall Military-Grade AI Firewall" 
+    alt="Verified by TrustWall Defense-in-Depth AI Firewall" 
   />
 </a>`;
 
@@ -233,8 +234,29 @@ export const AppInspectorPage: React.FC = () => {
             margin: '0 auto',
             lineHeight: 1.6
           }}>
-            Audit third-party SaaS apps, Slack bots, and AI webhooks for prompt injections and data leaks. Generate an official, tamper-proof Cryptographic Attestation Seal so users and enterprise clients believe and trust your ecosystem.
+            Audit third-party SaaS apps, Slack bots, and AI webhooks in a safe simulated evaluation sandbox. Assess potential vulnerability vectors mapped against OWASP LLM risks and generate a verifiable attestation record.
           </p>
+        </div>
+
+        {/* Simulated Assessment Sandbox Notice */}
+        <div style={{
+          margin: '0 auto 28px',
+          maxWidth: '920px',
+          padding: '14px 18px',
+          background: 'rgba(56, 189, 248, 0.08)',
+          border: '1px solid rgba(56, 189, 248, 0.25)',
+          borderRadius: 'var(--radius-md)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '14px',
+          fontSize: '0.8125rem',
+          color: '#bae6fd',
+          lineHeight: 1.5
+        }}>
+          <Info size={20} style={{ flexShrink: 0, color: '#38bdf8' }} />
+          <div>
+            <strong style={{ color: '#ffffff' }}>SIMULATED ASSESSMENT SANDBOX:</strong> External API and webhook evaluations run inside a local synthetic emulation container against mapped OWASP LLM risk indicators. To maintain legal and ethical boundaries, external domains are analyzed heuristically without executing unauthorized live vulnerability attacks against third-party production infrastructure.
+          </div>
         </div>
 
         {/* Input & Target Selection Form */}
@@ -551,7 +573,7 @@ export const AppInspectorPage: React.FC = () => {
                   Embed Verified Trust Badge on Your App
                 </h3>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem', lineHeight: 1.6 }}>
-                  Display this live cryptographic verification seal on your website, SaaS dashboard, or GitHub repository. Visitors can click the badge to view this certified security audit in real time.
+                  Display this live cryptographic verification seal on your website, SaaS dashboard, or GitHub repository. Visitors can click the badge to view this verified security audit and attestation record in real time.
                 </p>
               </div>
 
@@ -610,7 +632,7 @@ export const AppInspectorPage: React.FC = () => {
                           padding: '1px 5px',
                           borderRadius: '4px'
                         }}>
-                          A+ CERTIFIED
+                          A+ VERIFIED
                         </span>
                       </div>
                       <div style={{ fontSize: '0.6875rem', color: '#94a3b8', fontFamily: 'var(--font-mono)' }}>
@@ -669,10 +691,10 @@ export const AppInspectorPage: React.FC = () => {
             <div className="glass-panel" style={{ padding: '32px' }}>
               <div style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto 32px' }}>
                 <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#ffffff', marginBottom: '8px' }}>
-                  Enterprise Trust & Public Verification Proofs
+                  Open Standards & Heuristic Defense Benchmarks
                 </h3>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem' }}>
-                  Every scan is cryptographically signed and verifiable. Why 1,420+ Fortune 500 AI systems and developer teams trust TrustWall.
+                  Audited against industry risk frameworks. Engineered for development teams and AI builders adhering to open security standards.
                 </p>
               </div>
 
@@ -685,13 +707,13 @@ export const AppInspectorPage: React.FC = () => {
                   textAlign: 'center'
                 }}>
                   <div style={{ fontSize: '2rem', fontWeight: 900, color: '#a855f7', marginBottom: '4px' }}>
-                    14,892,104
+                    100+ Tests
                   </div>
                   <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#ffffff' }}>
-                    Scanned Prompts & API Calls
+                    Synthetic Jailbreak Test Suite
                   </div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-                    Zero sensitive data leaked
+                    Heuristic rule coverage
                   </div>
                 </div>
 
@@ -703,13 +725,13 @@ export const AppInspectorPage: React.FC = () => {
                   textAlign: 'center'
                 }}>
                   <div style={{ fontSize: '2rem', fontWeight: 900, color: '#10b981', marginBottom: '4px' }}>
-                    99.998%
+                    OWASP LLM
                   </div>
                   <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#ffffff' }}>
-                    Adversarial Attack Mitigation
+                    Core Vectors Evaluated
                   </div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-                    Zero false positives in enterprise benchmarks
+                    LLM01, LLM02, LLM06 heuristics
                   </div>
                 </div>
 
@@ -721,18 +743,18 @@ export const AppInspectorPage: React.FC = () => {
                   textAlign: 'center'
                 }}>
                   <div style={{ fontSize: '2rem', fontWeight: 900, color: '#38bdf8', marginBottom: '4px' }}>
-                    &lt; 18ms
+                    &lt; 5ms
                   </div>
                   <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#ffffff' }}>
-                    Average Pipeline Latency
+                    Local Regex Evaluation
                   </div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-                    Edge-accelerated enclave proxy
+                    Zero-latency client heuristics
                   </div>
                 </div>
               </div>
 
-              {/* Compliance Badges Grid */}
+              {/* Framework Alignment Badges */}
               <div style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -743,19 +765,19 @@ export const AppInspectorPage: React.FC = () => {
                 borderTop: '1px solid var(--border-subtle)'
               }}>
                 <span className="badge badge-safe">
-                  <CheckCircle2 size={13} /> SOC 2 TYPE II CERTIFIED
+                  <CheckCircle2 size={13} /> OWASP TOP 10 FOR LLMS (2025)
                 </span>
                 <span className="badge badge-safe">
-                  <CheckCircle2 size={13} /> ISO/IEC 27001 AUDITED
+                  <CheckCircle2 size={13} /> NIST AI RMF 1.0 MAPPED
                 </span>
                 <span className="badge badge-safe">
-                  <CheckCircle2 size={13} /> HIPAA SECURITY COMPLIANT
+                  <CheckCircle2 size={13} /> PRIVACY-BY-DESIGN PRINCIPLES
                 </span>
                 <span className="badge badge-safe">
-                  <CheckCircle2 size={13} /> EU AI ACT ART. 9 & 15 VERIFIED
+                  <CheckCircle2 size={13} /> EU AI ACT ART. 9 & 15 DESIGN GOALS
                 </span>
                 <span className="badge badge-safe">
-                  <CheckCircle2 size={13} /> ZERO-DATA RETENTION GUARANTEE
+                  <CheckCircle2 size={13} /> ZERO PERSISTENT RETENTION
                 </span>
               </div>
             </div>

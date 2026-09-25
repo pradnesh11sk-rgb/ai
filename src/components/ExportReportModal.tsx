@@ -212,7 +212,7 @@ ${data.recommendationText}
             }}>
               <div style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.1)', paddingBottom: '14px', marginBottom: '18px' }}>
                 <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#06b6d4', textTransform: 'uppercase' }}>
-                  CERTIFIED SECURITY AUDIT
+                  SECURITY AUDIT & ATTESTATION REPORT
                 </div>
                 <h4 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#ffffff', marginTop: '2px' }}>
                   TrustWall AI Firewall — Trust Passport

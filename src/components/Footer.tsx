@@ -62,71 +62,79 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
                 Platform
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.875rem' }}>
-                <a 
+                <button 
+                  type="button"
                   onClick={() => { setActiveTab('home'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                  style={{ color: 'var(--text-secondary)', textDecoration: 'none', cursor: 'pointer' }}
+                  style={{ background: 'none', border: 'none', padding: 0, color: 'var(--text-secondary)', textAlign: 'left', cursor: 'pointer', font: 'inherit', fontSize: '0.875rem' }}
                 >
                   Overview & Pipeline
-                </a>
-                <a 
+                </button>
+                <button 
+                  type="button"
                   onClick={() => { setActiveTab('scanner'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                  style={{ color: 'var(--text-secondary)', textDecoration: 'none', cursor: 'pointer' }}
+                  style={{ background: 'none', border: 'none', padding: 0, color: 'var(--text-secondary)', textAlign: 'left', cursor: 'pointer', font: 'inherit', fontSize: '0.875rem' }}
                 >
                   AI Security Scanner
-                </a>
-                <a 
+                </button>
+                <button 
+                  type="button"
                   onClick={() => { setActiveTab('integrations'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                  style={{ color: 'var(--text-secondary)', textDecoration: 'none', cursor: 'pointer' }}
+                  style={{ background: 'none', border: 'none', padding: 0, color: 'var(--text-secondary)', textAlign: 'left', cursor: 'pointer', font: 'inherit', fontSize: '0.875rem' }}
                 >
                   App Inspector & Trust
-                </a>
-                <a 
+                </button>
+                <button 
+                  type="button"
                   onClick={() => { setActiveTab('passport'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                  style={{ color: 'var(--text-secondary)', textDecoration: 'none', cursor: 'pointer' }}
+                  style={{ background: 'none', border: 'none', padding: 0, color: 'var(--text-secondary)', textAlign: 'left', cursor: 'pointer', font: 'inherit', fontSize: '0.875rem' }}
                 >
                   Trust Passport
-                </a>
-                <a 
+                </button>
+                <button 
+                  type="button"
                   onClick={() => { setActiveTab('security-center'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                  style={{ color: 'var(--text-secondary)', textDecoration: 'none', cursor: 'pointer' }}
+                  style={{ background: 'none', border: 'none', padding: 0, color: 'var(--text-secondary)', textAlign: 'left', cursor: 'pointer', font: 'inherit', fontSize: '0.875rem' }}
                 >
                   Security Center
-                </a>
-                <a 
+                </button>
+                <button 
+                  type="button"
                   onClick={() => { setActiveTab('profile'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                  style={{ color: 'var(--text-secondary)', textDecoration: 'none', cursor: 'pointer' }}
+                  style={{ background: 'none', border: 'none', padding: 0, color: 'var(--text-secondary)', textAlign: 'left', cursor: 'pointer', font: 'inherit', fontSize: '0.875rem' }}
                 >
                   Profile & Account
-                </a>
+                </button>
               </div>
             </div>
 
             <div>
               <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#ffffff', textTransform: 'uppercase', marginBottom: '14px' }}>
-                Governance
+                Governance & Frameworks
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.875rem' }}>
-                <a 
+                <button 
+                  type="button"
                   onClick={() => { setActiveTab('privacy'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                  style={{ color: 'var(--text-secondary)', textDecoration: 'none', cursor: 'pointer' }}
+                  style={{ background: 'none', border: 'none', padding: 0, color: 'var(--text-secondary)', textAlign: 'left', cursor: 'pointer', font: 'inherit', fontSize: '0.875rem' }}
                 >
                   Privacy by Design
-                </a>
-                <a 
+                </button>
+                <button 
+                  type="button"
                   onClick={() => { setActiveTab('about'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                  style={{ color: 'var(--text-secondary)', textDecoration: 'none', cursor: 'pointer' }}
+                  style={{ background: 'none', border: 'none', padding: 0, color: 'var(--text-secondary)', textAlign: 'left', cursor: 'pointer', font: 'inherit', fontSize: '0.875rem' }}
                 >
-                  Mission & Problem
-                </a>
+                  Mission & Problem Statement
+                </button>
                 <span style={{ color: 'var(--text-muted)', fontSize: '0.8125rem' }}>
-                  Zero Persistent Storage
+                  Zero Persistent Storage Architecture
                 </span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Global Compliance & Trust Badges */}
+        {/* Engineering Standards & Framework Mapping */}
         <div style={{
           padding: '24px 0',
           borderTop: '1px solid var(--border-subtle)',
@@ -137,7 +145,13 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
           justifyContent: 'center',
           marginBottom: '24px'
         }}>
-          {['SOC2 TYPE II CERTIFIED', 'ISO/IEC 27001 AUDITED', 'HIPAA SECURITY COMPLIANT', 'EU AI ACT ART. 9 & 15', 'ZERO-KNOWLEDGE PROOF VERIFIED'].map(badge => (
+          {[
+            'OWASP LLM TOP 10 (2025) MAPPED',
+            'NIST AI RMF 1.0 ALIGNED',
+            'PRIVACY-BY-DESIGN PRINCIPLES',
+            'CLIENT-SIDE HEURISTIC REDACTION',
+            'ZERO PERSISTENT PROMPT STORAGE'
+          ].map(badge => (
             <div key={badge} style={{
               padding: '6px 12px',
               border: '1px solid rgba(139, 92, 246, 0.35)',
@@ -170,7 +184,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
           color: 'var(--text-muted)'
         }}>
           <div>
-            TrustWall is a military-grade defensive security intelligence framework. All demonstration vectors use harmless synthetic benchmarks.
+            TrustWall is a transparent defensive AI firewall prototype. All demonstration vectors run against documented heuristic and regex rules using synthetic benchmarks.
           </div>
           <div>
             © {new Date().getFullYear()} TRUSTWALL — The AI Firewall. All rights reserved.

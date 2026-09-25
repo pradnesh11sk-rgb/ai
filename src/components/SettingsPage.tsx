@@ -133,7 +133,7 @@ export const SettingsPage: React.FC = () => {
             Interface Color Palette & Visual Theme
           </h2>
           <p className="text-muted" style={{ marginBottom: '1.5rem', fontSize: '0.9rem' }}>
-            Select your preferred military-grade aesthetic. Changes apply instantly across the entire TrustWall application.
+            Select your preferred defensive security aesthetic. Changes apply instantly across the entire TrustWall application.
           </p>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '14px' }}>
