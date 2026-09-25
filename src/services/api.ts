@@ -6,7 +6,8 @@ import type {
   ActivityEvent,
   DetectedPII,
   DetectedThreat,
-  RiskLevel
+  RiskLevel,
+  TrustPassportData
 } from '../../shared/types';
 
 // Removed server imports to prevent process.env errors in Vite client
@@ -39,8 +40,8 @@ export async function scanPromptApi(prompt: string): Promise<PromptScanResult> {
     scanId,
     timestamp: new Date().toISOString(),
     originalPrompt: prompt,
-    detectedPII: hasPII ? [{ type: 'SSN', value: '***-**-****', start: 0, end: 11 }] : [],
-    detectedThreats: hasThreat ? [{ type: 'PROMPT_INJECTION', severity: 'CRITICAL', description: 'Possible system override' }] : [],
+    detectedPII: hasPII ? [{ id: 'pii-1', category: 'SSN', label: 'Social Security', rawSnippet: '999-99-9999', maskedSnippet: '[SSN]', startIndex: 0, endIndex: 11, placeholder: '[SSN]' }] : [],
+    detectedThreats: hasThreat ? [{ id: 'th-1', type: 'SYSTEM_PROMPT_OVERRIDE', title: 'Injection Attempt', threatLevel: 'CRITICAL', triggerPhrase: 'ignore all', reason: 'Possible system override', recommendedAction: 'Block' }] : [],
     privacyScore: hasPII ? 40 : 100,
     securityScore: hasThreat ? 10 : 100,
     overallRisk,
@@ -71,11 +72,12 @@ export async function protectPromptApi(
 
   // Fallback
   return {
-    sanitizedText: prompt.replace(/ignore all/gi, '[REDACTED]').replace(/\d{3}-\d{2}-\d{4}/g, '[SSN]'),
+    scanId: `PW-${Math.floor(1000 + Math.random() * 9000)}`,
+    protectedPrompt: prompt.replace(/ignore all/gi, '[REDACTED]').replace(/\d{3}-\d{2}-\d{4}/g, '[SSN]'),
     originalPrompt: prompt,
-    privacyEventsProtected: detectedPII.length,
+    redactionsCount: detectedPII.length,
     blockedThreatsCount: detectedThreats.length,
-    isFullySanitized: true
+    redactedCategories: []
   };
 }
 
@@ -121,14 +123,20 @@ export async function analyzeResponseApi(prompt: string, response: string): Prom
   }
 
   return {
-    trustScore: 85,
-    riskLevel: 'LOW',
-    modelReliability: 90,
-    dataLeakageRisk: 10,
-    harmfulContentRisk: 5,
-    hallucinationRisk: 20,
-    recommendation: "Response appears safe. Fallback analysis.",
-    flags: []
+    scanId: `PW-${Math.floor(1000 + Math.random() * 9000)}`,
+    timestamp: new Date().toISOString(),
+    prompt,
+    response,
+    overallTrustScore: 85,
+    overallRisk: 'LOW',
+    reliabilityScore: 90,
+    privacyScore: 100,
+    securityScore: 80,
+    reliabilityFlags: [],
+    securityFlags: [],
+    privacyFlags: [],
+    recommendation: 'SAFE_TO_USE',
+    recommendationText: 'Response appears safe. Fallback analysis.'
   };
 }
 
