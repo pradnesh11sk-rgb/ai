@@ -112,8 +112,9 @@ export const TrustPassport: React.FC<TrustPassportProps> = ({
         </div>
 
         {/* The Signature Passport Card */}
-        <div 
-          className="glass-panel printable-card"
+        <div className="holographic-card-container" style={{ width: '100%' }}>
+          <div 
+            className="glass-panel printable-card holographic-card"
           style={{
             padding: '36px',
             border: '1.5px solid rgba(6, 182, 212, 0.4)',
@@ -427,6 +428,7 @@ export const TrustPassport: React.FC<TrustPassportProps> = ({
                 <Download size={14} />
                 <span>Download Report</span>
               </button>
+            </div>
             </div>
           </div>
         </div>

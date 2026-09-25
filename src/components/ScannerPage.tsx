@@ -67,6 +67,37 @@ const DEMO_SCENARIOS = [
   }
 ];
 
+const TypewriterText = ({ text, speed = 15 }: { text: string, speed?: number }) => {
+  const [displayedText, setDisplayedText] = useState('');
+
+  useEffect(() => {
+    let index = 0;
+    setDisplayedText('');
+    const timer = setInterval(() => {
+      setDisplayedText(prev => prev + text.charAt(index));
+      index++;
+      if (index >= text.length) clearInterval(timer);
+    }, speed);
+    return () => clearInterval(timer);
+  }, [text, speed]);
+
+  return (
+    <>
+      {displayedText}
+      {displayedText.length < text.length && (
+        <span style={{ 
+          display: 'inline-block', 
+          width: '8px', 
+          height: '15px', 
+          background: '#38bdf8', 
+          marginLeft: '4px',
+          animation: 'pulse-ring 1s infinite'
+        }} />
+      )}
+    </>
+  );
+};
+
 export const ScannerPage: React.FC<ScannerPageProps> = ({ 
   initialPrompt = '', 
   onViewPassport,
@@ -1017,7 +1048,7 @@ export const ScannerPage: React.FC<ScannerPageProps> = ({
               whiteSpace: 'pre-wrap',
               marginBottom: '24px'
             }}>
-              {aiResponseText}
+              <TypewriterText text={aiResponseText} speed={10} />
             </div>
 
             {/* Egress Trust Analysis Component */}

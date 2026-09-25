@@ -367,6 +367,7 @@ export const SecurityCenter: React.FC = () => {
                 return (
                   <div
                     key={act.id}
+                    className="animate-slide-down"
                     style={{
                       padding: '12px 14px',
                       background: 'rgba(255, 255, 255, 0.02)',
