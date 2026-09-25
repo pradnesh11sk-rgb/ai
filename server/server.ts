@@ -1,15 +1,15 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { scanPrivacy, sanitizePrompt } from './services/privacyScanner';
-import { detectThreats, neutralizeThreats } from './services/threatDetector';
-import { analyzeResponse } from './services/responseAnalyzer';
+import { scanPrivacy, sanitizePrompt } from './services/privacyScanner.js';
+import { detectThreats, neutralizeThreats } from './services/threatDetector.js';
+import { analyzeResponse } from './services/responseAnalyzer.js';
 import { 
   generateSimulatedResponse, 
   updateAiKeys, 
   getAiKeysStatus, 
   testAiKeyConnection 
-} from './services/aiSimulator';
+} from './services/aiSimulator.js';
 import {
   isSupabaseConfigured,
   getSupabaseStatus,
@@ -18,14 +18,14 @@ import {
   savePassportToSupabase,
   saveIncidentToSupabase,
   getPassportsHistory
-} from './services/supabaseClient';
+} from './services/supabaseClient.js';
 import type { 
   PromptScanResult, 
   RiskLevel, 
   SecurityStats, 
   ActivityEvent, 
   TrustPassportData 
-} from '../shared/types';
+} from '../shared/types.js';
 
 dotenv.config();
 

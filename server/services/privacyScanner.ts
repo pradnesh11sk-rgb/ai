@@ -1,4 +1,4 @@
-import type { DetectedPII, PIICategory, ProtectedPromptResult } from '../../shared/types';
+import type { DetectedPII, PIICategory, ProtectedPromptResult } from '../../shared/types.js';
 
 // Regex patterns for sensitive data detection
 const EMAIL_REGEX = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g;

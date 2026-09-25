@@ -1,5 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import type { TrustPassportData } from '../../shared/types';
+import type { TrustPassportData } from '../../shared/types.js';
 
 // In-memory runtime config storage
 let currentSupabaseUrl: string = process.env.SUPABASE_URL || '';

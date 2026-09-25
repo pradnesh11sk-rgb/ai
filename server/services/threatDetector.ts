@@ -1,4 +1,4 @@
-import type { DetectedThreat, RiskLevel, ThreatType } from '../../shared/types';
+import type { DetectedThreat, RiskLevel, ThreatType } from '../../shared/types.js';
 
 interface ThreatRule {
   id: string;

@@ -1,4 +1,4 @@
-import type { ResponseTrustResult, RiskLevel } from '../../shared/types';
+import type { ResponseTrustResult, RiskLevel } from '../../shared/types.js';
 
 export function analyzeResponse(prompt: string, response: string): ResponseTrustResult {
   const scanId = `PW-${Math.floor(1000 + Math.random() * 9000)}-RES`;
