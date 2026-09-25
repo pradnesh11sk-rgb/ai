@@ -92,6 +92,12 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab }) => {
                 >
                   Security Center
                 </a>
+                <a 
+                  onClick={() => { setActiveTab('profile'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                  style={{ color: 'var(--text-secondary)', textDecoration: 'none', cursor: 'pointer' }}
+                >
+                  Profile & Account
+                </a>
               </div>
             </div>
 

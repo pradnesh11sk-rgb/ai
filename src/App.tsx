@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import { ScannerPage } from './components/ScannerPage';
@@ -10,6 +10,9 @@ import { ExportReportModal } from './components/ExportReportModal';
 import { Footer } from './components/Footer';
 import { SettingsPage } from './components/SettingsPage';
 import { IntegrationsPage } from './components/IntegrationsPage';
+import { ProfilePage } from './components/ProfilePage';
+import { SignInModal } from './components/SignInModal';
+import { getCurrentUser, subscribeAuth, type UserProfile } from './services/authManager';
 import type { TrustPassportData, PromptScanResult, ResponseTrustResult } from '../shared/types';
 import { Sparkles, X } from 'lucide-react';
 
@@ -22,9 +25,19 @@ export function App() {
   const [currentScan, setCurrentScan] = useState<PromptScanResult | null>(null);
   const [currentTrust, setCurrentTrust] = useState<ResponseTrustResult | null>(null);
 
-  // Modal state
+  // Authentication & Modal state
+  const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
+  const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [showJudgeBanner, setShowJudgeBanner] = useState(true);
+
+  useEffect(() => {
+    setCurrentUser(getCurrentUser());
+    const unsubscribe = subscribeAuth((user) => {
+      setCurrentUser(user);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const demoScenarios = [
     {
@@ -143,6 +156,7 @@ export function App() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         onLaunchDemo={handleLaunchDemo}
+        onOpenSignInModal={() => setIsSignInModalOpen(true)}
       />
 
       {/* Main Content Area */}
@@ -212,7 +226,27 @@ export function App() {
         {activeTab === 'settings' && (
           <SettingsPage />
         )}
+
+        {activeTab === 'profile' && (
+          <ProfilePage
+            currentUser={currentUser}
+            onOpenSignInModal={() => setIsSignInModalOpen(true)}
+            onNavigateToSettings={() => {
+              setActiveTab('settings');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
+        )}
       </main>
+
+      {/* Sign In & Authentication Modal */}
+      <SignInModal
+        isOpen={isSignInModalOpen}
+        onClose={() => setIsSignInModalOpen(false)}
+        onSuccess={(user) => {
+          setCurrentUser(user);
+        }}
+      />
 
       {/* Export / Print Report Modal */}
       <ExportReportModal

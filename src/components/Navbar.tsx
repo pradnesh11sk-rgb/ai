@@ -12,25 +12,43 @@ import {
   Settings, 
   Palette, 
   Award,
-  ChevronDown
+  ChevronDown,
+  User,
+  LogOut
 } from 'lucide-react';
 import { type ThemeId, AVAILABLE_THEMES, getInitialTheme, applyTheme } from '../services/themeManager';
+import { type UserProfile, getCurrentUser, subscribeAuth, logoutUser } from '../services/authManager';
 
 interface NavbarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   onLaunchDemo: (scenarioIndex: number) => void;
+  onOpenSignInModal: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onLaunchDemo }) => {
+export const Navbar: React.FC<NavbarProps> = ({ 
+  activeTab, 
+  setActiveTab, 
+  onLaunchDemo,
+  onOpenSignInModal 
+}) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentTheme, setCurrentTheme] = useState<ThemeId>('cyber-violet');
   const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
 
   useEffect(() => {
     const initial = getInitialTheme();
     setCurrentTheme(initial);
     applyTheme(initial);
+
+    // Initial auth & subscription
+    setCurrentUser(getCurrentUser());
+    const unsubscribe = subscribeAuth((user) => {
+      setCurrentUser(user);
+    });
+    return () => unsubscribe();
   }, []);
 
   const handleThemeChange = (themeId: ThemeId) => {
@@ -48,11 +66,13 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onLaunc
     { id: 'privacy', label: 'Privacy by Design', icon: Lock },
     { id: 'about', label: 'About', icon: ShieldAlert },
     { id: 'settings', label: 'Settings', icon: Settings },
+    { id: 'profile', label: 'Profile', subtitle: 'Account settings', icon: User },
   ];
 
   const handleNavClick = (id: string) => {
     setActiveTab(id);
     setMobileMenuOpen(false);
+    setUserDropdownOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -157,11 +177,11 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onLaunc
         {/* Desktop Nav Links */}
         <nav style={{
           display: 'none',
-          gap: '6px',
+          gap: '4px',
           alignItems: 'center'
         }} className="desktop-nav">
           <style>{`
-            @media (min-width: 1040px) {
+            @media (min-width: 1080px) {
               .desktop-nav { display: flex !important; }
               .mobile-toggle { display: none !important; }
             }
@@ -180,23 +200,23 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onLaunc
                   background: isActive ? 'var(--theme-badge-bg)' : 'transparent',
                   color: isActive ? 'var(--theme-badge-text)' : 'var(--text-secondary)',
                   border: isActive ? '1px solid var(--theme-badge-border)' : '1px solid transparent',
-                  padding: '7px 12px',
+                  padding: '7px 11px',
                   borderRadius: 'var(--radius-md)',
-                  fontSize: '0.84rem',
+                  fontSize: '0.82rem',
                   fontWeight: 600,
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',
                 }}
               >
                 <Icon size={14} color={isActive ? 'var(--accent-primary)' : 'currentColor'} />
-                {item.label}
+                <span>{item.label}</span>
               </button>
             );
           })}
         </nav>
 
-        {/* Action Controls & Theme Switcher */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        {/* Action Controls, Theme Switcher & Top-Right Sign In */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           
           {/* Dynamic Theme Picker */}
           <div style={{ position: 'relative' }}>
@@ -283,6 +303,152 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onLaunc
             )}
           </div>
 
+          {/* Top-Right Sign In / User Profile Area */}
+          {!currentUser ? (
+            <button
+              onClick={onOpenSignInModal}
+              className="btn btn-secondary btn-sm"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                borderColor: 'var(--border-card)',
+                background: 'rgba(255, 255, 255, 0.06)',
+                color: '#ffffff',
+                fontWeight: 600
+              }}
+              id="top-right-sign-in-btn"
+            >
+              <User size={14} color="var(--accent-primary)" />
+              <span>Sign In</span>
+            </button>
+          ) : (
+            <div style={{ position: 'relative' }}>
+              <button
+                onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                className="btn btn-secondary btn-sm"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '4px 10px 4px 6px',
+                  borderColor: 'var(--border-card)',
+                  background: 'rgba(255, 255, 255, 0.08)'
+                }}
+                id="top-right-user-menu-btn"
+              >
+                <div style={{
+                  width: '26px',
+                  height: '26px',
+                  borderRadius: '50%',
+                  background: 'var(--theme-gradient)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#ffffff',
+                  fontWeight: 800,
+                  fontSize: '0.6875rem'
+                }}>
+                  {currentUser.avatarInitials}
+                </div>
+                <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#ffffff', maxWidth: '90px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {currentUser.name.split(' ')[0]}
+                </span>
+                <ChevronDown size={12} color="var(--text-muted)" />
+              </button>
+
+              {userDropdownOpen && (
+                <div style={{
+                  position: 'absolute',
+                  top: 'calc(100% + 8px)',
+                  right: 0,
+                  width: '220px',
+                  background: 'var(--bg-card)',
+                  border: '1px solid var(--border-card)',
+                  borderRadius: 'var(--radius-md)',
+                  boxShadow: '0 12px 35px rgba(0,0,0,0.8)',
+                  padding: '8px',
+                  zIndex: 200,
+                  backdropFilter: 'blur(20px)'
+                }}>
+                  <div style={{ padding: '8px 10px 8px', borderBottom: '1px solid var(--border-subtle)' }}>
+                    <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#ffffff' }}>{currentUser.name}</div>
+                    <div style={{ fontSize: '0.6875rem', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{currentUser.email}</div>
+                  </div>
+
+                  <button
+                    onClick={() => handleNavClick('profile')}
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '8px 10px',
+                      background: 'transparent',
+                      border: 'none',
+                      color: 'var(--text-primary)',
+                      fontSize: '0.8125rem',
+                      borderRadius: '6px',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      marginTop: '4px'
+                    }}
+                  >
+                    <User size={14} color="var(--accent-primary)" />
+                    <span>Profile & Account</span>
+                  </button>
+
+                  <button
+                    onClick={() => handleNavClick('settings')}
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '8px 10px',
+                      background: 'transparent',
+                      border: 'none',
+                      color: 'var(--text-primary)',
+                      fontSize: '0.8125rem',
+                      borderRadius: '6px',
+                      cursor: 'pointer',
+                      textAlign: 'left'
+                    }}
+                  >
+                    <Settings size={14} />
+                    <span>Security Settings</span>
+                  </button>
+
+                  <div style={{ borderTop: '1px solid var(--border-subtle)', margin: '4px 0' }} />
+
+                  <button
+                    onClick={() => {
+                      logoutUser();
+                      setUserDropdownOpen(false);
+                    }}
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '8px 10px',
+                      background: 'transparent',
+                      border: 'none',
+                      color: '#f87171',
+                      fontSize: '0.8125rem',
+                      borderRadius: '6px',
+                      cursor: 'pointer',
+                      textAlign: 'left'
+                    }}
+                  >
+                    <LogOut size={14} />
+                    <span>Sign Out</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Quick Demo CTA */}
           <button
             onClick={() => {
@@ -364,11 +530,43 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onLaunc
                 }}
               >
                 <Icon size={18} color={isActive ? 'var(--accent-primary)' : 'var(--text-secondary)'} />
-                {item.label}
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <span>{item.label}</span>
+                  {item.subtitle && (
+                    <span style={{ fontSize: '0.6875rem', color: 'var(--text-muted)' }}>
+                      {item.subtitle}
+                    </span>
+                  )}
+                </div>
               </button>
             );
           })}
-          <div style={{ paddingTop: '8px', borderTop: '1px solid var(--border-subtle)', display: 'flex', gap: '8px' }}>
+          
+          <div style={{ paddingTop: '8px', borderTop: '1px solid var(--border-subtle)', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            {!currentUser ? (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenSignInModal();
+                }}
+                className="btn btn-secondary btn-sm"
+                style={{ flex: 1 }}
+              >
+                <User size={14} /> Sign In
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  handleNavClick('profile');
+                }}
+                className="btn btn-secondary btn-sm"
+                style={{ flex: 1 }}
+              >
+                <User size={14} /> {currentUser.name}
+              </button>
+            )}
+
             <button
               onClick={() => {
                 setActiveTab('scanner');
@@ -383,7 +581,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, onLaunc
             <button
               onClick={() => handleNavClick('scanner')}
               className="btn btn-primary btn-sm"
-              style={{ flex: 1 }}
+              style={{ width: '100%' }}
             >
               <Shield size={14} /> Scan Prompt
             </button>
