@@ -5,12 +5,15 @@ import type {
   SecurityStats,
   ActivityEvent,
   DetectedPII,
-  DetectedThreat,
-  RiskLevel,
-  TrustPassportData
+  DetectedThreat
 } from '../../shared/types';
+import {
+  runFullPromptScan,
+  generateProtectedPrompt,
+  generateSafeModelResponse,
+  evaluateResponseTrust
+} from './guardrailEngine';
 
-// Removed server imports to prevent process.env errors in Vite client
 const API_BASE = '/api';
 
 export async function scanPromptApi(prompt: string): Promise<PromptScanResult> {
@@ -24,39 +27,18 @@ export async function scanPromptApi(prompt: string): Promise<PromptScanResult> {
       return await res.json();
     }
   } catch (err) {
-    console.warn('Backend API scan failed, engaging resilient client-side firewall engine', err);
+    // Expected in client-only or offline environments - gracefully handle
   }
 
-  // Resilient fallback
-  const scanId = `PW-${Math.floor(1000 + Math.random() * 9000)}`;
-  const hasThreat = prompt.toLowerCase().includes('ignore all') || prompt.toLowerCase().includes('rm -rf');
-  const hasPII = prompt.includes('SSN') || /\d{3}-\d{2}-\d{4}/.test(prompt);
-  
-  let overallRisk: RiskLevel = 'SAFE';
-  if (hasThreat) overallRisk = 'CRITICAL';
-  else if (hasPII) overallRisk = 'MEDIUM';
-
-  return {
-    scanId,
-    timestamp: new Date().toISOString(),
-    originalPrompt: prompt,
-    detectedPII: hasPII ? [{ id: 'pii-1', category: 'SSN', label: 'Social Security', rawSnippet: '999-99-9999', maskedSnippet: '[SSN]', startIndex: 0, endIndex: 11, placeholder: '[SSN]' }] : [],
-    detectedThreats: hasThreat ? [{ id: 'th-1', type: 'SYSTEM_PROMPT_OVERRIDE', title: 'Injection Attempt', threatLevel: 'CRITICAL', triggerPhrase: 'ignore all', reason: 'Possible system override', recommendedAction: 'Block' }] : [],
-    privacyScore: hasPII ? 40 : 100,
-    securityScore: hasThreat ? 10 : 100,
-    overallRisk,
-    piiCount: hasPII ? 1 : 0,
-    threatsCount: hasThreat ? 1 : 0,
-    hasSensitiveData: hasPII,
-    hasThreats: hasThreat
-  };
+  // High-precision local guardrail engine
+  return runFullPromptScan(prompt);
 }
 
 export async function protectPromptApi(
   prompt: string,
   detectedPII: DetectedPII[],
   detectedThreats: DetectedThreat[]
-): Promise<ProtectedPromptResult> {
+): Promise<ProtectedPromptResult & { demaskMap?: Record<string, string> }> {
   try {
     const res = await fetch(`${API_BASE}/protect`, {
       method: 'POST',
@@ -64,21 +46,14 @@ export async function protectPromptApi(
       body: JSON.stringify({ prompt, detectedPII, detectedThreats })
     });
     if (res.ok) {
-      return await res.json();
+      const data = await res.json();
+      return data;
     }
   } catch (err) {
-    console.warn('Backend API protect failed, running fallback engine', err);
+    // Fallback to local engine
   }
 
-  // Fallback
-  return {
-    scanId: `PW-${Math.floor(1000 + Math.random() * 9000)}`,
-    protectedPrompt: prompt.replace(/ignore all/gi, '[REDACTED]').replace(/\d{3}-\d{2}-\d{4}/g, '[SSN]'),
-    originalPrompt: prompt,
-    redactionsCount: detectedPII.length,
-    blockedThreatsCount: detectedThreats.length,
-    redactedCategories: []
-  };
+  return generateProtectedPrompt(prompt, detectedPII, detectedThreats);
 }
 
 export async function simulateResponseApi(prompt: string, isSanitized: boolean): Promise<{
@@ -97,15 +72,10 @@ export async function simulateResponseApi(prompt: string, isSanitized: boolean):
       return await res.json();
     }
   } catch (err) {
-    console.warn('Backend API simulate-response failed, running fallback engine', err);
+    // Fallback
   }
 
-  return {
-    response: "This is a simulated fallback response from the client because the backend is unreachable.",
-    model: "fallback-client-sim",
-    tokensUsed: 42,
-    generationTimeMs: 150
-  };
+  return generateSafeModelResponse(prompt, isSanitized);
 }
 
 export async function analyzeResponseApi(prompt: string, response: string): Promise<ResponseTrustResult> {
@@ -119,25 +89,10 @@ export async function analyzeResponseApi(prompt: string, response: string): Prom
       return await res.json();
     }
   } catch (err) {
-    console.warn('Backend API analyze-response failed, running fallback engine', err);
+    // Fallback
   }
 
-  return {
-    scanId: `PW-${Math.floor(1000 + Math.random() * 9000)}`,
-    timestamp: new Date().toISOString(),
-    prompt,
-    response,
-    overallTrustScore: 85,
-    overallRisk: 'LOW',
-    reliabilityScore: 90,
-    privacyScore: 100,
-    securityScore: 80,
-    reliabilityFlags: [],
-    securityFlags: [],
-    privacyFlags: [],
-    recommendation: 'SAFE_TO_USE',
-    recommendationText: 'Response appears safe. Fallback analysis.'
-  };
+  return evaluateResponseTrust(prompt, response);
 }
 
 export async function fetchStatsApi(): Promise<SecurityStats> {
@@ -151,11 +106,11 @@ export async function fetchStatsApi(): Promise<SecurityStats> {
   }
 
   return {
-    promptsScanned: 148,
-    threatsBlocked: 31,
-    piiProtected: 67,
-    highRiskInterceptions: 9,
-    averageTrustScore: 92,
+    promptsScanned: 184,
+    threatsBlocked: 42,
+    piiProtected: 89,
+    highRiskInterceptions: 14,
+    averageTrustScore: 94,
     systemUptime: '99.98%'
   };
 }
@@ -173,59 +128,43 @@ export async function fetchActivityApi(): Promise<ActivityEvent[]> {
   return [
     {
       id: 'act-1',
-      timestamp: 'Just now',
+      timestamp: '2 mins ago',
       status: 'ALERT',
-      message: 'Blocked Prompt Injection: System Override Attempt',
-      tag: 'Injection Blocked'
+      message: 'Adversarial jailbreak payload quarantined: DAN persona override attempt',
+      tag: 'Jailbreak Blocked'
     },
     {
       id: 'act-2',
-      timestamp: '3m ago',
+      timestamp: '5 mins ago',
       status: 'WARNING',
-      message: 'Redacted payment card number and personal email from inbound prompt',
-      tag: 'PII Redacted'
+      message: 'Masked 1 payment card number and 1 SSN credential from customer support prompt',
+      tag: 'PII Protected'
     },
     {
       id: 'act-3',
-      timestamp: '8m ago',
+      timestamp: '12 mins ago',
       status: 'SUCCESS',
-      message: 'Trust Passport #PW-8402 generated with 94/100 score',
-      tag: 'Passport Issued'
+      message: 'Cloud infrastructure migration architecture query verified & passed clean',
+      tag: 'Clean Scan'
     },
     {
       id: 'act-4',
-      timestamp: '14m ago',
-      status: 'INFO',
-      message: 'Quarantined API Key token sk-demo-•••••••• from LLM context',
-      tag: 'Secret Masked'
+      timestamp: '18 mins ago',
+      status: 'ALERT',
+      message: 'API Key sk-live-•••••••• filtered prior to LLM foundation model context',
+      tag: 'Credential Blocked'
     },
     {
       id: 'act-5',
-      timestamp: '22m ago',
+      timestamp: '25 mins ago',
       status: 'SUCCESS',
-      message: 'Safe cloud architectural query processed with zero threat flags',
-      tag: 'Clean Scan'
+      message: 'AI Trust Passport #TP-TRW-8912 cryptographically compiled and verified',
+      tag: 'Passport Issued'
     }
   ];
 }
 
-export async function fetchConfigStatusApi(): Promise<{
-  supabase: { isConfigured: boolean; projectUrl: string; hasKey: boolean };
-  ai: { openaiConfigured: boolean; geminiConfigured: boolean; anthropicConfigured: boolean; activeProvider: string };
-}> {
-  try {
-    const res = await fetch(`${API_BASE}/config/status`);
-    if (res.ok) return await res.json();
-  } catch {
-    // fallback
-  }
-  return {
-    supabase: { isConfigured: false, projectUrl: '', hasKey: false },
-    ai: { openaiConfigured: false, geminiConfigured: false, anthropicConfigured: false, activeProvider: 'Privora Defensive Simulator' }
-  };
-}
-
-export async function saveSupabaseConfigApi(url: string, key: string) {
+export async function saveSupabaseConfigApi(url: string, key: string): Promise<{ success: boolean; error?: string }> {
   try {
     const res = await fetch(`${API_BASE}/config/supabase`, {
       method: 'POST',
@@ -233,135 +172,46 @@ export async function saveSupabaseConfigApi(url: string, key: string) {
       body: JSON.stringify({ url, key })
     });
     return await res.json();
-  } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : String(e);
-    return { error: msg };
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Connection failed' };
   }
 }
 
-export async function testSupabaseConnectionApi(url?: string, key?: string): Promise<{
-  connected: boolean;
-  message: string;
-  latencyMs: number;
-}> {
+export async function saveAiKeysApi(keys: { openai?: string; anthropic?: string; gemini?: string }): Promise<{ success: boolean; error?: string }> {
   try {
-    const res = await fetch(`${API_BASE}/config/test-supabase`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url, key })
-    });
-    return await res.json();
-  } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : String(e);
-    return { connected: false, message: `Could not reach server: ${msg}`, latencyMs: 0 };
-  }
-}
-
-export async function saveAiKeysApi(keys: { openaiKey?: string; geminiKey?: string; anthropicKey?: string }) {
-  try {
-    const res = await fetch(`${API_BASE}/config/ai-keys`, {
+    const res = await fetch(`${API_BASE}/config/keys`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(keys)
     });
     return await res.json();
-  } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : String(e);
-    return { error: msg };
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Saving keys failed' };
   }
 }
 
-export async function testAiKeyApi(provider: 'openai' | 'gemini' | 'anthropic', key: string): Promise<{
-  connected: boolean;
-  message: string;
-  latencyMs: number;
-}> {
+export async function testSupabaseConnectionApi(url: string, key: string): Promise<{ connected: boolean; message?: string }> {
   try {
-    const res = await fetch(`${API_BASE}/config/test-ai`, {
+    const res = await fetch(`${API_BASE}/test/supabase`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url, key })
+    });
+    return await res.json();
+  } catch (err: any) {
+    return { connected: false, message: 'Could not connect to Supabase endpoint.' };
+  }
+}
+
+export async function testAiKeyApi(provider: string, key: string): Promise<{ connected: boolean; message?: string }> {
+  try {
+    const res = await fetch(`${API_BASE}/test/ai-key`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ provider, key })
     });
     return await res.json();
-  } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : String(e);
-    return { connected: false, message: `Test request error: ${msg}`, latencyMs: 0 };
+  } catch (err: any) {
+    return { connected: false, message: 'Verification error.' };
   }
-}
-
-export async function fetchPassportsHistoryApi(): Promise<TrustPassportData[]> {
-  try {
-    const res = await fetch(`${API_BASE}/passports`);
-    if (res.ok) return await res.json();
-  } catch {
-    // fallback
-  }
-  return [
-    {
-      passportId: 'TP-SEC-DEMO-9021',
-      scanId: 'PW-9021',
-      timestamp: new Date(Date.now() - 1000 * 60 * 12).toISOString(),
-      clientOrigin: 'Privora Secure Client Gateway v2.4',
-      modelEvaluated: 'privora-guard-sim-gpt4o',
-      privacyScore: 98,
-      securityScore: 94,
-      reliabilityScore: 90,
-      overallTrustScore: 94,
-      threatLevel: 'LOW',
-      promptStatus: 'PROTECTED_SANITIZED',
-      privacyEventsProtected: 3,
-      threatsBlocked: 1,
-      recommendationText: 'SAFE TO PROCEED WITH CAUTION — Inbound tokens sanitized.',
-      cryptographicSignature: 'SHA256:4a6b29d4e5f67a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b'
-    },
-    {
-      passportId: 'TP-SEC-DEMO-8402',
-      scanId: 'PW-8402',
-      timestamp: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
-      clientOrigin: 'Privora Enterprise Gateway',
-      modelEvaluated: 'privora-guard-sim-gpt4o',
-      privacyScore: 100,
-      securityScore: 98,
-      reliabilityScore: 92,
-      overallTrustScore: 97,
-      threatLevel: 'SAFE',
-      promptStatus: 'PROTECTED_SANITIZED',
-      privacyEventsProtected: 0,
-      threatsBlocked: 0,
-      recommendationText: 'VERIFIED SAFE — No adversarial vectors or PII detected.',
-      cryptographicSignature: 'SHA256:1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b'
-    }
-  ];
-}
-
-export async function savePassportApi(passport: Partial<TrustPassportData>): Promise<TrustPassportData & { storageStatus?: string }> {
-  try {
-    const res = await fetch(`${API_BASE}/passport`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(passport)
-    });
-    if (res.ok) return await res.json();
-  } catch {
-    // fallback
-  }
-
-  return {
-    passportId: `TP-${Date.now().toString(36).toUpperCase()}-${passport.scanId || '7721'}`,
-    scanId: passport.scanId || `PW-${Math.floor(1000 + Math.random() * 9000)}`,
-    timestamp: new Date().toISOString(),
-    clientOrigin: 'Privora Secure Client Gateway v2.4',
-    modelEvaluated: passport.modelEvaluated || 'privora-guard-inference',
-    privacyScore: passport.privacyScore ?? 95,
-    securityScore: passport.securityScore ?? 92,
-    reliabilityScore: passport.reliabilityScore ?? 88,
-    overallTrustScore: passport.overallTrustScore ?? 92,
-    threatLevel: passport.threatLevel || 'SAFE',
-    promptStatus: passport.promptStatus || 'PROTECTED_SANITIZED',
-    privacyEventsProtected: passport.privacyEventsProtected || 0,
-    threatsBlocked: passport.threatsBlocked || 0,
-    recommendationText: passport.recommendationText || 'Safe to proceed.',
-    cryptographicSignature: `SHA256:${Array.from({ length: 32 }, () => Math.floor(Math.random() * 16).toString(16)).join('')}`,
-    storageStatus: 'Retained in Ephemeral Client Cache'
-  };
 }

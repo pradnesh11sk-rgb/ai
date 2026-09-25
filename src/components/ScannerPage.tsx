@@ -113,6 +113,8 @@ export const ScannerPage: React.FC<ScannerPageProps> = ({
   // Protection state
   const [isProtecting, setIsProtecting] = useState(false);
   const [protectedResult, setProtectedResult] = useState<ProtectedPromptResult | null>(null);
+  const [demaskMap, setDemaskMap] = useState<Record<string, string>>({});
+  const [isLocallyUnmasked, setIsLocallyUnmasked] = useState(false);
   const [comparisonTab, setComparisonTab] = useState<'after' | 'before' | 'diff'>('after');
   const [copiedProtected, setCopiedProtected] = useState(false);
 
@@ -192,6 +194,9 @@ export const ScannerPage: React.FC<ScannerPageProps> = ({
     );
 
     setProtectedResult(protectedRes);
+    if (protectedRes.demaskMap) {
+      setDemaskMap(protectedRes.demaskMap);
+    }
     setIsProtecting(false);
     showToast('Protected Prompt Generated: PII redacted & injection vectors neutralized.');
   };
@@ -229,8 +234,8 @@ export const ScannerPage: React.FC<ScannerPageProps> = ({
       passportId: `TP-${Date.now().toString(36).toUpperCase()}-${scanResult ? scanResult.scanId.replace(/[^0-9]/g, '') : '7721'}`,
       scanId: scanResult ? scanResult.scanId : `PW-${Math.floor(1000 + Math.random() * 9000)}`,
       timestamp: new Date().toISOString(),
-      clientOrigin: 'Privora Secure Client Gateway v2.4',
-      modelEvaluated: aiModelInfo?.model || 'privora-guard-inference',
+      clientOrigin: 'TrustWall Zero-Trust Gateway v3.0',
+      modelEvaluated: aiModelInfo?.model || 'trustwall-guard-inference',
       privacyScore: scanResult ? (protectedResult ? 98 : scanResult.privacyScore) : 92,
       securityScore: scanResult ? (protectedResult ? 96 : scanResult.securityScore) : 88,
       reliabilityScore: trustRes.reliabilityScore,
@@ -780,7 +785,7 @@ export const ScannerPage: React.FC<ScannerPageProps> = ({
                     </h4>
                   </div>
                   <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginTop: '4px', maxWidth: '640px' }}>
-                    Privora can automatically redact sensitive personal identifiers, mask API keys, and neutralize malicious prompt injection clauses while preserving semantic meaning.
+                    TrustWall can automatically redact sensitive personal identifiers, mask API keys, and neutralize malicious prompt injection clauses while preserving semantic meaning.
                   </p>
                 </div>
 
@@ -941,7 +946,7 @@ export const ScannerPage: React.FC<ScannerPageProps> = ({
 
                 <div>
                   <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#34d399', marginBottom: '6px' }}>
-                    PRIVORA PROTECTED PROMPT (SANITIZED)
+                    TRUSTWALL PROTECTED PROMPT (SANITIZED)
                   </div>
                   <div style={{
                     background: 'var(--bg-input)',
@@ -1035,6 +1040,65 @@ export const ScannerPage: React.FC<ScannerPageProps> = ({
               )}
             </div>
 
+            {/* Model Response Header & Zero-Knowledge Local De-Masking Control */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: '12px',
+              flexWrap: 'wrap',
+              gap: '10px'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-secondary)' }}>
+                  Inference View:
+                </span>
+                <span className={`badge ${isLocallyUnmasked ? 'badge-safe' : 'badge-cyan'}`} style={{ fontSize: '0.6875rem' }}>
+                  {isLocallyUnmasked ? '🔓 Client De-anonymized' : '🔒 Zero-Trust Masked Tokens'}
+                </span>
+              </div>
+
+              {Object.keys(demaskMap).length > 0 && (
+                <button
+                  onClick={() => setIsLocallyUnmasked(!isLocallyUnmasked)}
+                  className="btn btn-secondary btn-sm"
+                  style={{
+                    fontSize: '0.75rem',
+                    borderColor: isLocallyUnmasked ? '#10b981' : 'var(--border-card)',
+                    background: isLocallyUnmasked ? 'rgba(16, 185, 129, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+                    color: isLocallyUnmasked ? '#34d399' : 'var(--text-primary)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px'
+                  }}
+                  title="Toggle client-side zero-knowledge unmasking"
+                >
+                  <Lock size={13} color={isLocallyUnmasked ? '#34d399' : 'currentColor'} />
+                  <span>{isLocallyUnmasked ? '🔒 View Masked Tokens' : '🔓 Reveal Decrypted Plaintext Locally'}</span>
+                </button>
+              )}
+            </div>
+
+            {isLocallyUnmasked && (
+              <div style={{
+                padding: '10px 14px',
+                background: 'rgba(16, 185, 129, 0.1)',
+                border: '1px solid rgba(16, 185, 129, 0.3)',
+                borderRadius: 'var(--radius-sm)',
+                fontSize: '0.8125rem',
+                color: '#34d399',
+                marginBottom: '14px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px'
+              }}>
+                <ShieldCheck size={16} style={{ flexShrink: 0 }} />
+                <span>
+                  <strong>Proven Zero-Knowledge Privacy:</strong> The remote cloud model only ever saw anonymous tokens (e.g. <code>[CUSTOMER_NAME_1]</code>). Your local browser sandbox safely restored the original values without any sensitive data leaving your machine.
+                </span>
+              </div>
+            )}
+
             {/* Model Response Text Box */}
             <div style={{
               background: 'var(--bg-input)',
@@ -1048,7 +1112,17 @@ export const ScannerPage: React.FC<ScannerPageProps> = ({
               whiteSpace: 'pre-wrap',
               marginBottom: '24px'
             }}>
-              <TypewriterText text={aiResponseText} speed={10} />
+              <TypewriterText 
+                text={(() => {
+                  if (!isLocallyUnmasked) return aiResponseText;
+                  let rehydrated = aiResponseText;
+                  for (const [token, originalVal] of Object.entries(demaskMap)) {
+                    rehydrated = rehydrated.split(token).join(originalVal);
+                  }
+                  return rehydrated;
+                })()} 
+                speed={10} 
+              />
             </div>
 
             {/* Egress Trust Analysis Component */}

@@ -36,7 +36,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     },
     {
       id: 2,
-      name: 'Privora Ingress Firewall',
+      name: 'TrustWall Ingress Firewall',
       subtitle: 'PII Redactor & Injection Shield',
       tag: 'Pre-Inference Filter',
       icon: ShieldCheck,
@@ -54,7 +54,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     },
     {
       id: 4,
-      name: 'Privora Egress Inspector',
+      name: 'TrustWall Egress Inspector',
       subtitle: 'Hallucination & Risk Check',
       tag: 'Post-Inference Audit',
       icon: FileCheck,
@@ -130,7 +130,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             maxWidth: '720px',
             margin: '0 auto'
           }}>
-            <strong style={{ color: 'var(--text-primary)' }}>Privora</strong> protects sensitive information before it reaches AI and evaluates AI responses before you trust them.
+            <strong style={{ color: 'var(--text-primary)' }}>TrustWall</strong> protects sensitive information before it reaches AI and evaluates AI responses before you trust them.
           </p>
 
           <p style={{

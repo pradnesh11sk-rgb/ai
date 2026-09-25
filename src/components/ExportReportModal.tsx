@@ -23,11 +23,11 @@ export const ExportReportModal: React.FC<ExportReportModalProps> = ({
   if (!isOpen) return null;
 
   const data = passportData || {
-    passportId: 'TP-PRIVORA-2048-SEC',
-    scanId: 'PW-2048',
+    passportId: 'TP-TRUSTWALL-2048-SEC',
+    scanId: 'TRW-2048',
     timestamp: new Date().toISOString(),
-    clientOrigin: 'Privora Secure Client Gateway v2.4',
-    modelEvaluated: 'privora-guard-sim-gpt4o',
+    clientOrigin: 'TrustWall Zero-Trust Gateway v3.0',
+    modelEvaluated: 'trustwall-guard-sim-gpt4o',
     privacyScore: 94,
     securityScore: 92,
     reliabilityScore: 86,
@@ -45,7 +45,7 @@ export const ExportReportModal: React.FC<ExportReportModalProps> = ({
   };
 
   const getMarkdownReport = () => {
-    return `# PRIVORA — AI SECURITY AUDIT REPORT & TRUST PASSPORT
+    return `# TRUSTWALL — AI SECURITY AUDIT REPORT & TRUST PASSPORT
 **Passport ID:** ${data.passportId}
 **Scan ID:** ${data.scanId}
 **Timestamp:** ${new Date(data.timestamp).toUTCString()}
@@ -215,7 +215,7 @@ ${data.recommendationText}
                   CERTIFIED SECURITY AUDIT
                 </div>
                 <h4 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#ffffff', marginTop: '2px' }}>
-                  Privora AI Firewall — Trust Passport
+                  TrustWall AI Firewall — Trust Passport
                 </h4>
                 <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>
                   ID: {data.passportId} • Scan Reference: {data.scanId}

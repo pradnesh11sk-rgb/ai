@@ -97,7 +97,7 @@ export function App() {
                 <Sparkles size={12} /> HACKATHON JUDGE TOUR
               </span>
               <span style={{ color: '#cbd5e1' }}>
-                Test Privora's end-to-end firewall flow in 30 seconds:
+                Test TrustWall's end-to-end firewall flow in 30 seconds:
               </span>
             </div>
 

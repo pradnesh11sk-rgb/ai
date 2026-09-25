@@ -25,11 +25,11 @@ export const TrustPassport: React.FC<TrustPassportProps> = ({
 
   // Default demo passport if none has been generated in the current session
   const data: TrustPassportData = passportData || {
-    passportId: 'TP-PRIVORA-2048-SEC',
-    scanId: 'PW-2048',
+    passportId: 'TP-TRUSTWALL-2048-SEC',
+    scanId: 'TRW-2048',
     timestamp: new Date().toISOString(),
-    clientOrigin: 'Privora Secure Client Gateway v2.4',
-    modelEvaluated: 'privora-guard-sim-gpt4o',
+    clientOrigin: 'TrustWall Zero-Trust Gateway v3.0',
+    modelEvaluated: 'trustwall-guard-sim-gpt4o',
     privacyScore: 94,
     securityScore: 92,
     reliabilityScore: 86,
@@ -168,7 +168,7 @@ export const TrustPassport: React.FC<TrustPassportProps> = ({
                     color: '#ffffff',
                     letterSpacing: '0.04em'
                   }}>
-                    PRIVORA TRUST PASSPORT
+                    TRUSTWALL TRUST PASSPORT
                   </span>
                   <span className="badge badge-safe">
                     ✓ VERIFIED

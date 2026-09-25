@@ -28,7 +28,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onStartScan }) => {
           </div>
 
           <h2 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.02em', marginBottom: '14px' }}>
-            About PRIVORA
+            About TRUSTWALL
           </h2>
           <p style={{ fontSize: '1.2rem', color: '#38bdf8', fontWeight: 600 }}>
             “Protect what you send. Verify what you receive.”
@@ -77,7 +77,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onStartScan }) => {
               <Shield size={22} color="#10b981" />
             </div>
             <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff', marginBottom: '12px' }}>
-              Privora’s Mission
+              TrustWall’s Mission
             </h3>
             <p style={{ fontSize: '0.9375rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '12px' }}>
               <strong style={{ color: '#ffffff' }}>
@@ -85,7 +85,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onStartScan }) => {
               </strong>
             </p>
             <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-              Privora acts as an intelligent firewall checkpoint: scanning inbound prompts for privacy and injection vectors, offering instant redaction, and auditing model responses for factual grounding and reliability.
+              TrustWall acts as an intelligent firewall checkpoint: scanning inbound prompts for privacy and injection vectors, offering instant redaction, and auditing model responses for factual grounding and reliability.
             </p>
           </div>
         </div>
@@ -156,14 +156,14 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onStartScan }) => {
             Ready to secure your AI workflows?
           </h3>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem', marginBottom: '20px' }}>
-            Try Privora's interactive scanner and test your own prompts or test vectors right now.
+            Try TrustWall's interactive scanner and test your own prompts or test vectors right now.
           </p>
           <button
             onClick={onStartScan}
             className="btn btn-primary btn-lg"
           >
             <Shield size={18} />
-            <span>Launch Privora Scanner</span>
+            <span>Launch TrustWall Scanner</span>
             <ArrowRight size={18} />
           </button>
         </div>

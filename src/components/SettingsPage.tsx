@@ -94,9 +94,9 @@ export const SettingsPage: React.FC = () => {
 
       // If all provided tests pass (or none provided), save
       const response = await saveAiKeysApi({
-        openaiKey: openaiKey || undefined,
-        anthropicKey: anthropicKey || undefined,
-        geminiKey: geminiKey || undefined,
+        openai: openaiKey || undefined,
+        anthropic: anthropicKey || undefined,
+        gemini: geminiKey || undefined,
       });
       if (response.success) {
         setAiStatus('success');

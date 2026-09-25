@@ -16,7 +16,7 @@ export const PrivacyByDesign: React.FC = () => {
     {
       icon: Server,
       title: 'No Real Credentials Required',
-      desc: 'Privora requires zero production API keys or passwords to evaluate prompt safety. All demonstration vectors use synthetic tokens.'
+      desc: 'TrustWall requires zero production API keys or passwords to evaluate prompt safety. All demonstration vectors use synthetic tokens.'
     },
     {
       icon: DatabaseZap,
@@ -60,7 +60,7 @@ export const PrivacyByDesign: React.FC = () => {
             Privacy by Design
           </h2>
           <p style={{ fontSize: '1.125rem', color: 'var(--text-secondary)', maxWidth: '640px', margin: '0 auto' }}>
-            We minimize what we collect. Privora is built from the ground up on the principle of minimal data exposure.
+            We minimize what we collect. TrustWall is built from the ground up on the principle of minimal data exposure.
           </p>
 
           {/* Prominent Retention Indicator */}
